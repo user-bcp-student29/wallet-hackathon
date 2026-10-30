@@ -108,8 +108,12 @@ payloads sensibles.
 
 ## SDD y decisiones
 
-La propuesta, especificación, plan, lista de tareas y criterios de aceptación
-mínimos de W6 están en `specs/W6-reconciliation/`. El primer corte mantiene
-dependencias de la biblioteca estándar de Python, usa fixtures en lugar de
-integraciones reales y aplaza deliberadamente las decisiones autónomas de
-agentes hasta validar el núcleo determinista.
+El proyecto usa OpenSpec para especificar antes de implementar. Las
+especificaciones vigentes de W6 están en `openspec/specs/`
+(`wallet-reconciliation`, `reconciliation-readonly-agent`,
+`reconciliation-human-review`); la propuesta, el diseño y las tareas de la
+change original archivada están en
+`openspec/changes/archive/2026-10-30-w6-reconciliation/`. El primer corte
+mantiene dependencias de la biblioteca estándar de Python, usa fixtures en
+lugar de integraciones reales y aplaza deliberadamente las decisiones
+autónomas de agentes hasta validar el núcleo determinista.

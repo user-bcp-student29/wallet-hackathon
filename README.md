@@ -203,8 +203,14 @@ contratos de herramientas se describen en
 
 ## SDD, pruebas y evidencia
 
-La propuesta, especificación, plan, tareas y criterios de aceptación están en
-[`specs/W6-reconciliation/`](specs/W6-reconciliation/).
+El proyecto usa [OpenSpec](https://github.com/Fission-AI/OpenSpec) para
+especificar antes de implementar. Las especificaciones vigentes de las tres
+capacidades (`wallet-reconciliation`, `reconciliation-readonly-agent`,
+`reconciliation-human-review`) están en
+[`openspec/specs/`](openspec/specs/); la propuesta, el diseño y las tareas de
+su change original archivada están en
+[`openspec/changes/archive/2026-10-30-w6-reconciliation/`](openspec/changes/archive/2026-10-30-w6-reconciliation/).
+Verifica las especificaciones con `openspec validate --all --strict`.
 
 ```powershell
 python -m unittest discover -s tests -v
