@@ -1,0 +1,12 @@
+{
+  "servers": {
+    "w6-reconciliation-read-only": {
+      "type": "stdio",
+      "command": "${workspaceFolder}\\.venv-ai\\Scripts\\python.exe",
+      "args": ["${workspaceFolder}\\mcp_server.py"],
+      "env": {
+        "W6_API_PORT": "8000"
+      }
+    }
+  }
+}

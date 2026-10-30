@@ -1,0 +1,56 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Run Backend",
+      "type": "process",
+      "command": "python",
+      "args": ["app.py"],
+      "isBackground": true,
+      "problemMatcher": []
+    },
+    {
+      "label": "Run AI Workflow Backend",
+      "type": "process",
+      "command": ".venv-ai\\Scripts\\python.exe",
+      "args": ["app.py"],
+      "isBackground": true,
+      "problemMatcher": []
+    },
+    {
+      "label": "Run Reconciliation",
+      "type": "process",
+      "command": "python",
+      "args": ["generate_evidence.py"],
+      "problemMatcher": []
+    },
+    {
+      "label": "Run Tests",
+      "type": "process",
+      "command": "python",
+      "args": ["-m", "unittest", "discover", "-s", "tests", "-v"],
+      "problemMatcher": []
+    },
+    {
+      "label": "Run AI Workflow Tests",
+      "type": "process",
+      "command": ".venv-ai\\Scripts\\python.exe",
+      "args": ["-m", "unittest", "discover", "-s", "tests", "-v"],
+      "problemMatcher": []
+    },
+    {
+      "label": "Run Guardrail Tests",
+      "type": "process",
+      "command": "python",
+      "args": ["-m", "unittest", "discover", "-s", "tests", "-p", "test_reconciliation.py", "-v"],
+      "problemMatcher": []
+    },
+    {
+      "label": "Generate Evidence",
+      "type": "process",
+      "command": "python",
+      "args": ["generate_evidence.py"],
+      "problemMatcher": []
+    }
+  ]
+}
