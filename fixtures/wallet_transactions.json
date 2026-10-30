@@ -1,0 +1,83 @@
+[
+  {
+    "transaction_id": "TX-MATCH",
+    "idempotency_key": "idem-match",
+    "external_reference": "provider-match",
+    "amount_minor": 1550,
+    "currency": "PEN",
+    "status": "CONFIRMED",
+    "created_at": "2026-10-30T09:00:00Z"
+  },
+  {
+    "transaction_id": "TX-AMOUNT",
+    "idempotency_key": "idem-amount",
+    "external_reference": "provider-amount",
+    "amount_minor": 10000,
+    "currency": "PEN",
+    "status": "CONFIRMED",
+    "created_at": "2026-10-30T09:05:00Z"
+  },
+  {
+    "transaction_id": "TX-STATUS",
+    "idempotency_key": "idem-status",
+    "external_reference": "provider-status",
+    "amount_minor": 2300,
+    "currency": "PEN",
+    "status": "CONFIRMED",
+    "created_at": "2026-10-30T09:10:00Z"
+  },
+  {
+    "transaction_id": "TX-MISSING-PROVIDER",
+    "idempotency_key": "idem-missing-provider",
+    "external_reference": "provider-missing",
+    "amount_minor": 4500,
+    "currency": "PEN",
+    "status": "CONFIRMED",
+    "created_at": "2026-10-30T09:15:00Z"
+  },
+  {
+    "transaction_id": "TX-MISSING-LEDGER",
+    "idempotency_key": "idem-missing-ledger",
+    "external_reference": "provider-no-ledger",
+    "amount_minor": 1800,
+    "currency": "PEN",
+    "status": "CONFIRMED",
+    "created_at": "2026-10-30T09:20:00Z"
+  },
+  {
+    "transaction_id": "TX-DUPLICATE",
+    "idempotency_key": "idem-duplicate",
+    "external_reference": "provider-duplicate",
+    "amount_minor": 5000,
+    "currency": "PEN",
+    "status": "CONFIRMED",
+    "created_at": "2026-10-30T09:25:00Z"
+  },
+  {
+    "transaction_id": "TX-PENDING",
+    "idempotency_key": "idem-pending",
+    "external_reference": "provider-pending",
+    "amount_minor": 800,
+    "currency": "PEN",
+    "status": "PENDING",
+    "created_at": "2026-10-30T09:30:00Z"
+  },
+  {
+    "transaction_id": "TX-TIMEOUT",
+    "idempotency_key": "idem-timeout",
+    "external_reference": "provider-timeout",
+    "amount_minor": 2900,
+    "currency": "PEN",
+    "status": "PROCESSING",
+    "created_at": "2026-10-30T09:35:00Z"
+  },
+  {
+    "transaction_id": "TX-DECLINED",
+    "idempotency_key": "idem-declined",
+    "external_reference": "provider-declined",
+    "amount_minor": 1200,
+    "currency": "PEN",
+    "status": "DECLINED",
+    "created_at": "2026-10-30T09:40:00Z"
+  }
+]

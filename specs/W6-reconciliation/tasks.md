@@ -1,0 +1,23 @@
+# Tareas de conciliación W6
+
+- [x] Definir los contratos comunes de transacción y resultado.
+- [x] Crear fixtures independientes de wallet, proveedor y ledger.
+- [x] Validar y normalizar las tres fuentes de entrada.
+- [x] Conciliar coincidencias exactas y clasificar las diferencias requeridas.
+- [x] Exponer creación, listado, detalle, diferencias y evidencia de ejecuciones, y OpenAPI.
+- [x] Implementar las APIs W6 de liquidación, ledger, incidencias, conciliación y control.
+- [x] Agregar los escenarios locales W2 de crear/confirmar y de callback no entregado.
+- [x] Conservar los IDs de incidencia y resolverlas solo en una conciliación posterior.
+- [x] Cubrir con pruebas la validación, los casos de conciliación y las rutas de la API.
+- [x] Generar evidencia reproducible de la ejecución de integración con fixtures.
+- [x] Documentar el arranque, el contrato de API, los supuestos y los siguientes cortes.
+- [x] Agregar las cuatro herramientas W6 de solo lectura sin argumentos y aplicar su lista permitida.
+- [x] Orquestar la recolección del snapshot y los guardrails de salida con LangGraph.
+- [x] Agregar un analista CrewAI opt-in sin herramientas y sin llamadas a modelos por defecto.
+- [x] Mantener las dependencias de IA en un entorno aislado con Python 3.13.
+- [x] Probar que el análisis del agente deja sin cambios la wallet, la liquidación, el ledger y las incidencias.
+- [x] Agregar un adaptador MCP local por stdio con herramientas de solo lectura fijas en loopback.
+- [x] Persistir las decisiones de revisión humana de solo agregado en un registro de auditoría SQLite local.
+- [x] Exponer el historial de revisión y los controles de decisión en el dashboard local.
+- [x] Probar la persistencia, el ciclo de vida de la revisión, la lista permitida de herramientas MCP y el comportamiento de solo lectura.
+- [ ] Agregar identidad autenticada del revisor antes de cualquier despliegue que no sea demo.
