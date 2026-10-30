@@ -1,0 +1,251 @@
+{
+  "run_id": "run-70890f71a444",
+  "created_at": "2026-10-30T18:46:20+00:00",
+  "fixture_hashes": {
+    "wallet": "12153c182010dc3a1b5fb6e1ac0dcf96b6a2361552aa2d03bc156a7a849bcdc2",
+    "provider": "b47481b94055726d8728fe62a84777080bc1b5176e3a04dcff63abadc7b74508",
+    "ledger": "c6bd613f822028378000b714e9d37ca0f2a2391e51694df2b47cc56151760589"
+  },
+  "summary": {
+    "processed": 10,
+    "matched": 1,
+    "differences": 8,
+    "pending": 1,
+    "human_review": 4
+  },
+  "results": [
+    {
+      "transaction_id": "TX-AMOUNT",
+      "wallet_status": "CONFIRMED",
+      "provider_status": "CONFIRMED",
+      "ledger_status": "POSTED",
+      "wallet_amount_minor": 10000,
+      "provider_amount_minor": 9000,
+      "ledger_amount_minor": 10000,
+      "reconciliation_status": "DIFFERENCE",
+      "difference_type": "AMOUNT_MISMATCH",
+      "difference_types": [
+        "AMOUNT_MISMATCH"
+      ],
+      "severity": "MEDIUM",
+      "recommended_action": "Compare source records and request an operational review.",
+      "requires_human_review": false,
+      "guardrail_result": {
+        "passed": true,
+        "decision": "PASS",
+        "reason": "Recommendation is allowlisted.",
+        "violations": []
+      }
+    },
+    {
+      "transaction_id": "TX-DECLINED",
+      "wallet_status": "DECLINED",
+      "provider_status": "DECLINED",
+      "ledger_status": "POSTED",
+      "wallet_amount_minor": 1200,
+      "provider_amount_minor": 1200,
+      "ledger_amount_minor": 1200,
+      "reconciliation_status": "HUMAN_REVIEW_REQUIRED",
+      "difference_type": "DECLINED",
+      "difference_types": [
+        "DECLINED"
+      ],
+      "severity": "CRITICAL",
+      "recommended_action": "Compare source records and request an operational review.",
+      "requires_human_review": true,
+      "guardrail_result": {
+        "passed": true,
+        "decision": "PASS",
+        "reason": "Recommendation is allowlisted.",
+        "violations": []
+      }
+    },
+    {
+      "transaction_id": "TX-DUPLICATE",
+      "wallet_status": "CONFIRMED",
+      "provider_status": "CONFIRMED",
+      "ledger_status": "POSTED",
+      "wallet_amount_minor": 5000,
+      "provider_amount_minor": 5000,
+      "ledger_amount_minor": 5000,
+      "reconciliation_status": "HUMAN_REVIEW_REQUIRED",
+      "difference_type": "DUPLICATE",
+      "difference_types": [
+        "DUPLICATE"
+      ],
+      "severity": "HIGH",
+      "recommended_action": "Compare source records and request an operational review.",
+      "requires_human_review": true,
+      "guardrail_result": {
+        "passed": true,
+        "decision": "PASS",
+        "reason": "Recommendation is allowlisted.",
+        "violations": []
+      }
+    },
+    {
+      "transaction_id": "TX-MATCH",
+      "wallet_status": "CONFIRMED",
+      "provider_status": "CONFIRMED",
+      "ledger_status": "POSTED",
+      "wallet_amount_minor": 1550,
+      "provider_amount_minor": 1550,
+      "ledger_amount_minor": 1550,
+      "reconciliation_status": "MATCHED",
+      "difference_type": null,
+      "difference_types": [],
+      "severity": "NONE",
+      "recommended_action": "No action required.",
+      "requires_human_review": false,
+      "guardrail_result": {
+        "passed": true,
+        "decision": "PASS",
+        "reason": "Recommendation is allowlisted.",
+        "violations": []
+      }
+    },
+    {
+      "transaction_id": "TX-MISSING-LEDGER",
+      "wallet_status": "CONFIRMED",
+      "provider_status": "CONFIRMED",
+      "ledger_status": null,
+      "wallet_amount_minor": 1800,
+      "provider_amount_minor": 1800,
+      "ledger_amount_minor": null,
+      "reconciliation_status": "DIFFERENCE",
+      "difference_type": "MISSING_IN_LEDGER",
+      "difference_types": [
+        "MISSING_IN_LEDGER"
+      ],
+      "severity": "MEDIUM",
+      "recommended_action": "Compare source records and request an operational review.",
+      "requires_human_review": false,
+      "guardrail_result": {
+        "passed": true,
+        "decision": "PASS",
+        "reason": "Recommendation is allowlisted.",
+        "violations": []
+      }
+    },
+    {
+      "transaction_id": "TX-MISSING-PROVIDER",
+      "wallet_status": "CONFIRMED",
+      "provider_status": null,
+      "ledger_status": "POSTED",
+      "wallet_amount_minor": 4500,
+      "provider_amount_minor": null,
+      "ledger_amount_minor": 4500,
+      "reconciliation_status": "DIFFERENCE",
+      "difference_type": "MISSING_IN_PROVIDER",
+      "difference_types": [
+        "MISSING_IN_PROVIDER"
+      ],
+      "severity": "MEDIUM",
+      "recommended_action": "Compare source records and request an operational review.",
+      "requires_human_review": false,
+      "guardrail_result": {
+        "passed": true,
+        "decision": "PASS",
+        "reason": "Recommendation is allowlisted.",
+        "violations": []
+      }
+    },
+    {
+      "transaction_id": "TX-MISSING-WALLET",
+      "wallet_status": null,
+      "provider_status": "CONFIRMED",
+      "ledger_status": "POSTED",
+      "wallet_amount_minor": null,
+      "provider_amount_minor": 2700,
+      "ledger_amount_minor": 2700,
+      "reconciliation_status": "DIFFERENCE",
+      "difference_type": "MISSING_IN_WALLET",
+      "difference_types": [
+        "MISSING_IN_WALLET"
+      ],
+      "severity": "MEDIUM",
+      "recommended_action": "Compare source records and request an operational review.",
+      "requires_human_review": false,
+      "guardrail_result": {
+        "passed": true,
+        "decision": "PASS",
+        "reason": "Recommendation is allowlisted.",
+        "violations": []
+      }
+    },
+    {
+      "transaction_id": "TX-PENDING",
+      "wallet_status": "PENDING",
+      "provider_status": "PENDING",
+      "ledger_status": null,
+      "wallet_amount_minor": 800,
+      "provider_amount_minor": 800,
+      "ledger_amount_minor": null,
+      "reconciliation_status": "PENDING_REVIEW",
+      "difference_type": "MISSING_IN_LEDGER",
+      "difference_types": [
+        "MISSING_IN_LEDGER",
+        "PENDING"
+      ],
+      "severity": "LOW",
+      "recommended_action": "Wait for a final provider status and reconcile again.",
+      "requires_human_review": false,
+      "guardrail_result": {
+        "passed": true,
+        "decision": "PASS",
+        "reason": "Recommendation is allowlisted.",
+        "violations": []
+      }
+    },
+    {
+      "transaction_id": "TX-STATUS",
+      "wallet_status": "CONFIRMED",
+      "provider_status": "DECLINED",
+      "ledger_status": "POSTED",
+      "wallet_amount_minor": 2300,
+      "provider_amount_minor": 2300,
+      "ledger_amount_minor": 2300,
+      "reconciliation_status": "HUMAN_REVIEW_REQUIRED",
+      "difference_type": "STATUS_MISMATCH",
+      "difference_types": [
+        "STATUS_MISMATCH",
+        "DECLINED"
+      ],
+      "severity": "CRITICAL",
+      "recommended_action": "Compare source records and request an operational review.",
+      "requires_human_review": true,
+      "guardrail_result": {
+        "passed": true,
+        "decision": "PASS",
+        "reason": "Recommendation is allowlisted.",
+        "violations": []
+      }
+    },
+    {
+      "transaction_id": "TX-TIMEOUT",
+      "wallet_status": "PROCESSING",
+      "provider_status": "TIMEOUT",
+      "ledger_status": null,
+      "wallet_amount_minor": 2900,
+      "provider_amount_minor": 2900,
+      "ledger_amount_minor": null,
+      "reconciliation_status": "HUMAN_REVIEW_REQUIRED",
+      "difference_type": "MISSING_IN_LEDGER",
+      "difference_types": [
+        "MISSING_IN_LEDGER",
+        "STATUS_MISMATCH",
+        "TIMEOUT",
+        "PENDING"
+      ],
+      "severity": "HIGH",
+      "recommended_action": "Verify the provider outcome before closing this operation.",
+      "requires_human_review": true,
+      "guardrail_result": {
+        "passed": true,
+        "decision": "PASS",
+        "reason": "Recommendation is allowlisted.",
+        "violations": []
+      }
+    }
+  ]
+}

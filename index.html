@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>W6 · Conciliación de billetera</title>
+  <style>
+    :root {
+      font-family: "Segoe UI", sans-serif;
+      color: #172b4d;
+      background: #f3f6fa;
+    }
+    body { margin: 0; }
+    main { max-width: 1180px; margin: 32px auto; padding: 0 20px; }
+    h1 { margin-bottom: 6px; }
+    .muted { color: #526581; }
+    .panel, .banner, .card {
+      background: white; border-radius: 8px; padding: 16px;
+      box-shadow: 0 2px 8px #18334c12;
+    }
+    .panel { margin: 16px 0; overflow-x: auto; }
+    .banner { margin: 16px 0; border-left: 5px solid #718198; }
+    .banner.error { border-color: #b12b2b; color: #8d1d1d; }
+    .toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 14px 0; }
+    button {
+      border: 0; border-radius: 6px; padding: 10px 14px;
+      color: white; background: #0756a5; cursor: pointer; font-weight: 600;
+    }
+    button.secondary { color: #17406d; background: #dce8f5; }
+    button:disabled { opacity: .6; cursor: wait; }
+    label { display: inline-flex; align-items: center; gap: 6px; }
+    input { width: 130px; border: 1px solid #b5c3d3; border-radius: 5px; padding: 8px; }
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+    .card strong { display: block; font-size: 1.5rem; margin-top: 8px; }
+    table { width: 100%; border-collapse: collapse; text-align: left; }
+    th, td { padding: 9px 8px; border-bottom: 1px solid #e6ebf1; vertical-align: top; }
+    th { color: #526581; font-size: .85rem; }
+    .empty { color: #718198; }
+    code { background: #edf2f7; border-radius: 4px; padding: 2px 5px; }
+    textarea { display: block; width: min(100%, 560px); min-height: 64px; margin: 8px 0; border: 1px solid #b5c3d3; border-radius: 5px; padding: 8px; font: inherit; }
+    .review-card { border: 1px solid #e6ebf1; border-radius: 6px; margin: 10px 0; padding: 12px; }
+    @media (max-width: 650px) {
+      th, td { padding: 7px 5px; font-size: .84rem; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Conciliación operativa · W6</h1>
+    <p class="muted">Wallet, reporte simulado del proveedor y ledger. Todo es local y ficticio; conciliar no mueve dinero.</p>
+    <section class="panel">
+      <h2>1. Pago W2 de prueba</h2>
+      <p>La semilla <code>PAY-1500</code> ya está confirmada por S/ 15.00. También puedes crear otro pago y confirmarlo.</p>
+      <div class="toolbar">
+        <button id="create-payment">Crear pago de S/ 15.00</button>
+        <label>Pago seleccionado <input id="payment-id" value="PAY-1500" aria-label="ID del pago seleccionado"></label>
+        <button class="secondary" id="confirm-payment">Confirmar pago</button>
+      </div>
+    </section>
+    <section class="panel">
+      <h2>2. Escenarios del proveedor</h2>
+      <div class="toolbar">
+        <button class="secondary" data-mode="AMOUNT">Reportar S/ 16.00</button>
+        <button class="secondary" data-mode="MISSING">Quitar del reporte</button>
+        <button class="secondary" data-mode="DUPLICATE">Duplicar fila</button>
+        <button class="secondary" data-mode="CALLBACK_UNDELIVERED">No entregar callback</button>
+        <button class="secondary" data-mode="ORPHAN">Agregar operación huérfana</button>
+        <button class="secondary" data-mode="CLEAR">Limpiar alteración</button>
+      </div>
+      <div class="toolbar">
+        <button id="reconcile">3. Ejecutar POST /reconciliations</button>
+        <button id="analyze" class="secondary">4. Analizar snapshot (solo lectura)</button>
+        <a href="/openapi.json" target="_blank" rel="noreferrer">Contrato OpenAPI</a>
+      </div>
+      <p class="muted">El análisis usa LangGraph y herramientas de consulta. CrewAI está desactivado por defecto y no llama a modelos.</p>
+      <div id="agent-analysis" class="empty">Todavía no se ejecutó el análisis local.</div>
+    </section>
+    <div id="banner" class="banner">Ejecuta la conciliación para comprobar el estado inicial.</div>
+    <div id="summary" class="cards"></div>
+    <section class="panel">
+      <h2>Incidencias OPEN y RESOLVED</h2>
+      <div id="incidents"><p class="empty">Todavía no hay incidencias.</p></div>
+    </section>
+    <section class="panel">
+      <h2>Revisión humana persistente</h2>
+      <p class="muted">Decide si confirmas o discrepas del hallazgo. Esto no aprueba pagos ni cambia saldos. El nombre del revisor es declarativo; el MVP local no autentica identidades.</p>
+      <label>Revisor <input id="reviewer-name" maxlength="80" autocomplete="name" aria-label="Nombre del revisor"></label>
+      <div id="review-queue"><p class="empty">No hay incidencias abiertas para revisar.</p></div>
+      <h3>Historial de decisiones</h3>
+      <div id="review-history"><p class="empty">Todavía no hay revisiones guardadas.</p></div>
+    </section>
+    <section class="panel">
+      <h2>Reporte del proveedor · GET /settlements</h2>
+      <div id="settlements"></div>
+    </section>
+    <section class="panel">
+      <h2>Asientos · GET /ledger</h2>
+      <div id="ledger"></div>
+    </section>
+  </main>
+  <script>
+    const requestJson = async (url, options) => {
+      const response = await fetch(url, options);
+      const body = await response.json();
+      if (!response.ok) throw new Error(body.error || `HTTP ${response.status}`);
+      return body;
+    };
+    const paymentId = () => document.getElementById("payment-id").value.trim();
+    const renderTable = (containerId, headers, rows) => {
+      const container = document.getElementById(containerId);
+      container.replaceChildren();
+      if (!rows.length) {
+        const empty = document.createElement("p");
+        empty.className = "empty";
+        empty.textContent = "Sin registros.";
+        container.append(empty);
+        return;
+      }
+      const table = document.createElement("table");
+      const head = document.createElement("thead");
+      const header = document.createElement("tr");
+      headers.forEach((value) => {
+        const th = document.createElement("th");
+        th.textContent = value;
+        header.append(th);
+      });
+      head.append(header);
+      const body = document.createElement("tbody");
+      rows.forEach((row) => {
+        const tr = document.createElement("tr");
+        row.forEach((value) => {
+          const td = document.createElement("td");
+          td.textContent = String(value ?? "—");
+          tr.append(td);
+        });
+        body.append(tr);
+      });
+      table.append(head, body);
+      container.append(table);
+    };
+    const renderReviewQueue = (incidents, reviews) => {
+      const container = document.getElementById("review-queue");
+      container.replaceChildren();
+      const openIncidents = incidents.filter((incident) => incident.status === "OPEN");
+      if (!openIncidents.length) {
+        const empty = document.createElement("p");
+        empty.className = "empty";
+        empty.textContent = "No hay incidencias abiertas para revisar.";
+        container.append(empty);
+        return;
+      }
+      const latestReview = new Map();
+      [...reviews].reverse().forEach((review) => latestReview.set(review.incident_id, review));
+      openIncidents.forEach((incident) => {
+        const card = document.createElement("article");
+        card.className = "review-card";
+        const summary = document.createElement("p");
+        summary.textContent =
+          `${incident.id} · ${incident.payment_id} · ${incident.reason} · ${incident.status}`;
+        card.append(summary);
+        const previous = latestReview.get(incident.id);
+        if (previous) {
+          const decision = document.createElement("p");
+          decision.className = "muted";
+          decision.textContent =
+            `Última decisión: ${previous.decision} por ${previous.reviewer}. Puedes añadir otra decisión al historial.`;
+          card.append(decision);
+        }
+        const rationale = document.createElement("textarea");
+        rationale.maxLength = 1000;
+        rationale.placeholder = "Motivo de la revisión (obligatorio)";
+        rationale.setAttribute("aria-label", `Motivo de revisión ${incident.id}`);
+        card.append(rationale);
+        [
+          ["CONFIRM_FINDING", "Confirmar hallazgo"],
+          ["DISPUTE_FINDING", "Discrepar del hallazgo"],
+        ].forEach(([decision, label]) => {
+          const button = document.createElement("button");
+          button.className = "secondary";
+          button.textContent = label;
+          button.addEventListener("click", () => {
+            submitHumanReview(incident.id, decision, rationale.value).catch(reportError);
+          });
+          card.append(button);
+        });
+        container.append(card);
+      });
+    };
+    const refresh = async () => {
+      const [incidents, settlements, ledger, reviews] = await Promise.all([
+        requestJson("/reconciliations/incidents"),
+        requestJson("/settlements"),
+        requestJson("/ledger"),
+        requestJson("/reconciliation/reviews"),
+      ]);
+      renderTable("incidents", ["ID", "Pago", "Motivo", "Estado"],
+        incidents.map((item) => [item.id, item.payment_id, item.reason, item.status]));
+      renderReviewQueue(incidents, reviews);
+      renderTable("review-history",
+        ["ID", "Incidencia", "Revisor", "Decisión", "Motivo", "Fecha UTC"],
+        reviews.map((item) => [
+          item.id, item.incident_id, item.reviewer, item.decision,
+          item.rationale, item.created_at,
+        ]));
+      renderTable("settlements", ["Pago", "Importe (céntimos)", "Estado"],
+        settlements.map((item) => [item.id, item.amount, item.status]));
+      renderTable("ledger", ["ID", "Operación", "Tipo", "Cuenta", "Importe"],
+        ledger.map((item) => [item.id, item.operation, item.kind, item.account, item.amount]));
+    };
+    const submitHumanReview = async (incidentId, decision, rationale) => {
+      const reviewer = document.getElementById("reviewer-name").value.trim();
+      if (!reviewer || !rationale.trim()) {
+        throw new Error("Indica el nombre del revisor y el motivo de la decisión.");
+      }
+      await requestJson(
+        `/reconciliations/incidents/${encodeURIComponent(incidentId)}/reviews`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ reviewer, decision, rationale }),
+        },
+      );
+      document.getElementById("banner").textContent =
+        "Decisión guardada en el historial local; no se ejecutó ninguna acción financiera.";
+      await refresh();
+    };
+    const runReconciliation = async () => {
+      const result = await requestJson("/reconciliations", { method: "POST" });
+      const banner = document.getElementById("banner");
+      banner.className = "banner";
+      banner.textContent = `${result.status}: ${result.differences.length} incidencia(s) OPEN en esta ejecución.`;
+      const summary = document.getElementById("summary");
+      summary.replaceChildren();
+      [["Resultado", result.status], ["Diferencias abiertas", result.differences.length]].forEach(([label, value]) => {
+        const card = document.createElement("section");
+        card.className = "card";
+        card.textContent = label;
+        const count = document.createElement("strong");
+        count.textContent = String(value);
+        card.append(count);
+        summary.append(card);
+      });
+      await refresh();
+    };
+    const reportError = (error) => {
+      const banner = document.getElementById("banner");
+      banner.className = "banner error";
+      banner.textContent = error.message;
+    };
+    document.getElementById("create-payment").addEventListener("click", async () => {
+      try {
+        const payment = await requestJson("/payments", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ amountCents: 1500 }),
+        });
+        document.getElementById("payment-id").value = payment.paymentId;
+        document.getElementById("banner").textContent =
+          `Pago ${payment.paymentId} creado con estado ${payment.status}. Confírmalo antes de conciliar.`;
+        await refresh();
+      } catch (error) {
+        reportError(error);
+      }
+    });
+    document.getElementById("confirm-payment").addEventListener("click", async () => {
+      try {
+        const payment = await requestJson(
+          `/payments/${encodeURIComponent(paymentId())}/confirm`,
+          { method: "POST" },
+        );
+        document.getElementById("banner").textContent =
+          `Pago ${payment.paymentId}: ${payment.status}.`;
+        await refresh();
+      } catch (error) {
+        reportError(error);
+      }
+    });
+    document.querySelectorAll("[data-mode]").forEach((button) => {
+      button.addEventListener("click", async () => {
+        try {
+          const mode = button.dataset.mode;
+          const id = mode === "ORPHAN" ? "PAY-ORPHAN" : paymentId();
+          const payload = { paymentId: id, mode };
+          if (mode === "AMOUNT" || mode === "ORPHAN") payload.amountCents = 1600;
+          await requestJson("/control/settlements", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+          document.getElementById("banner").textContent =
+            `Control ${mode} aplicado al reporte del proveedor; wallet y ledger no cambiaron.`;
+          await refresh();
+        } catch (error) {
+          reportError(error);
+        }
+      });
+    });
+    document.getElementById("reconcile").addEventListener("click", () => {
+      runReconciliation().catch(reportError);
+    });
+    document.getElementById("analyze").addEventListener("click", async () => {
+      try {
+        const analysis = await requestJson("/agent/analysis");
+        const container = document.getElementById("agent-analysis");
+        container.className = "card";
+        container.textContent =
+          `${analysis.workflow} · CrewAI ${analysis.crewai_status} · ` +
+          `${analysis.snapshot.open_incidents} incidencia(s) OPEN. ` +
+          `${analysis.recommendation} ${analysis.reconciliation_note}`;
+      } catch (error) {
+        reportError(error);
+      }
+    });
+    refresh().catch(reportError);
+  </script>
+</body>
+</html>

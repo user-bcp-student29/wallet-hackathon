@@ -1,0 +1,9 @@
+{
+  "initial_status": "MATCHED",
+  "amount_difference_status": "DIFFERENCES",
+  "amount_difference_reason": "AMOUNT_MISMATCH",
+  "incident_id_stable_on_repeat": true,
+  "resolved_status": "MATCHED",
+  "incident_final_status": "RESOLVED",
+  "wallet_amount_cents_after_control": 1500
+}
